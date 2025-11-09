@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionale Interventi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- HOME PAGE -->
+    <div id="homePage" class="page active">
+        <div class="container">
+            <div class="hero-section">
+                <h1 class="hero-title">Gestionale Interventi</h1>
+                <p class="hero-subtitle">Gestisci i tuoi rapportini di lavoro in modo semplice ed efficace</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    <h3 class="stat-number" id="totalInterventi">0</h3>
+                    <p class="stat-label">Interventi Totali</p>
+                </div>
+
+                <div class="stat-card">
+                    <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <h3 class="stat-number" id="totalOre">0h</h3>
+                    <p class="stat-label">Ore Lavorate</p>
+                </div>
+
+                <div class="stat-card">
+                    <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                    <h3 class="stat-number" id="totalFatturato">€0.00</h3>
+                    <p class="stat-label">Fatturato Totale</p>
+                </div>
+            </div>
+
+            <div class="cta-container">
+                <button id="goToRapportini" class="cta-button">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    <span>Vai ai Rapportini</span>
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RAPPORTINI PAGE -->
+    <div id="rapportiniPage" class="page">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <h1 class="header-title">Rapportini di Intervento</h1>
+                    <button id="goToHome" class="btn-secondary">
+                        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        <span>Home</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="container main-content">
+            <!-- Form Inserimento -->
+            <div class="form-card">
+                <h2 class="form-title" id="formTitle">Nuovo Intervento</h2>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Cliente *</label>
+                        <input type="text" id="cliente" class="form-input" placeholder="Nome cliente">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Data *</label>
+                        <input type="date" id="data" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Luogo</label>
+                        <input type="text" id="luogo" class="form-input" placeholder="Città o indirizzo">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Ore di Lavoro *</label>
+                        <input type="number" id="ore" class="form-input" step="0.5" placeholder="Es: 8.5">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label">Descrizione Intervento</label>
+                        <textarea id="descrizione" class="form-textarea" rows="4" placeholder="Cosa è stato fatto durante l'intervento..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Importo (€) *</label>
+                        <input type="number" id="importo" class="form-input" step="0.01" placeholder="Es: 250.00">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button id="saveBtn" class="btn-primary">Salva Intervento</button>
+                    <button id="cancelBtn" class="btn-cancel" style="display: none;">Annulla</button>
+                </div>
+            </div>
+
+            <!-- Ricerca e CSV -->
+            <div class="search-card">
+                <div class="search-container">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Cerca per cliente o luogo...">
+                </div>
+                
+                <div class="csv-actions">
+                    <button id="exportCSV" class="btn-csv btn-export">
+                        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Esporta CSV
+                    </button>
+                    <button id="importCSV" class="btn-csv btn-import">
+                        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        Importa CSV
+                    </button>
+                    <input type="file" id="fileInput" accept=".csv" style="display: none;">
+                </div>
+            </div>
+
+            <!-- Lista Interventi -->
+            <div id="interventiList" class="interventi-list"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
