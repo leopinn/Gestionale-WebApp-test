@@ -8,5 +8,25 @@
     "descrizione": "-Riparazione porta\n- Spurgo cessi",
     "importo": 1250,
     "createdAt": "2025-11-09T11:41:10.866Z"
+  },
+  {
+    "id": "intervento_1762688837321",
+    "cliente": "Discoteca Dorian Gray",
+    "data": "2025-11-09",
+    "luogo": "Via Belobono, 13, 37135 Cadidavid VR",
+    "ore": 6,
+    "descrizione": "- Sistemata console dj\n- Sistemata porta bagno donne\n- Sistemata porta bagno uomini",
+    "importo": 348.5,
+    "createdAt": "2025-11-09T11:50:52.350Z"
+  },
+  {
+    "id": "intervento_1762689029411",
+    "cliente": "Berfi's Club",
+    "data": "2025-11-05",
+    "luogo": "Via Lussemburgo, 1, 37135 Verona VR",
+    "ore": 4.5,
+    "descrizione": "- Sistemato pista centrale\n- Cambiata porta bagno uomini\n- Sistemato tubature bancone bar",
+    "importo": 651.49,
+    "createdAt": "2025-11-09T11:50:29.411Z"
   }
 ]

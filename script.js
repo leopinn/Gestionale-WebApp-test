@@ -1,5 +1,5 @@
 // Configurazione API
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'http://192.168.0.6:25565/api';
 
 // Stato applicazione
 let interventi = [];
