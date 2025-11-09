@@ -1,83 +1,95 @@
-// Configurazione API
-const API_URL = 'http://192.168.0.6:25565/api';
+// Configurazione API del database
+const API_URL = 'http://localhost:30000/api';
 
 // Stato applicazione
-let interventi = [];
+let lista_rapportini = [];      // Lista principale di tutti i rapportini
 let editingId = null;
+
+// ******************************************************
+// **** PRENDO GLI ID DI TUTTI GLI ELEMENTI - INIZIO ****
+// ******************************************************
 
 // Elementi DOM
 const homePage = document.getElementById('homePage');
-const rapportiniPage = document.getElementById('rapportiniPage');
-const goToRapportiniBtn = document.getElementById('goToRapportini');
-const goToHomeBtn = document.getElementById('goToHome');
+const pagina_rapportini = document.getElementById('pagina_rapportini');
+const btn_vai_a_rapportini = document.getElementById('vai_a_rapportini');
+const btn_vai_a_home = document.getElementById('vai_a_home');
 
-// Form elements
-const clienteInput = document.getElementById('cliente');
-const dataInput = document.getElementById('data');
-const luogoInput = document.getElementById('luogo');
-const oreInput = document.getElementById('ore');
-const descrizioneInput = document.getElementById('descrizione');
-const importoInput = document.getElementById('importo');
-const saveBtn = document.getElementById('saveBtn');
-const cancelBtn = document.getElementById('cancelBtn');
-const formTitle = document.getElementById('formTitle');
-
-// Search and list
-const searchInput = document.getElementById('searchInput');
-const interventiList = document.getElementById('interventiList');
-
-// Stats elements
-const totalInterventiEl = document.getElementById('totalInterventi');
-const totalOreEl = document.getElementById('totalOre');
-const totalFatturatoEl = document.getElementById('totalFatturato');
+// Elementi del rapportino
+const iv_cliente = document.getElementById('cliente');
+const iv_data = document.getElementById('data');
+const iv_luogo = document.getElementById('luogo');
+const iv_ore = document.getElementById('ore');
+const iv_descrizione = document.getElementById('descrizione');
+const iv_importo = document.getElementById('importo');
+const btn_salva = document.getElementById('btn_salva');
+const btn_cancella = document.getElementById('btn_cancella');
+const iv_titolo = document.getElementById('iv_titolo');
 
 // CSV elements
-const exportBtn = document.getElementById('exportCSV');
-const importBtn = document.getElementById('importCSV');
-const fileInput = document.getElementById('fileInput');
+const btn_export_csv = document.getElementById('btn_export_csv');
+const btn_import_csv = document.getElementById('btn_import_csv');
+const file_input = document.getElementById('file_input');
+
+// Altri elementi
+const cerca_rapportino = document.getElementById('cerca_rapportino');
+const interventi_lista = document.getElementById('interventi_lista');
+const totale_interventi = document.getElementById('totale_interventi');
+const totale_ore = document.getElementById('totale_ore');
+const totale_fatturato = document.getElementById('totale_fatturato');
+
+// ******************************************************
+// **** PRENDO GLI ID DI TUTTI GLI ELEMENTI - FINE ****
+// ******************************************************
+
+
+
+// ************************************************
+// **** DICHIARAZIONI METODI E EVENTI - INIZIO ****
+// ************************************************
 
 // Navigazione
-goToRapportiniBtn.addEventListener('click', () => {
+btn_vai_a_rapportini.addEventListener('click', () => {
     homePage.classList.remove('active');
-    rapportiniPage.classList.add('active');
+    pagina_rapportini.classList.add('active');
 });
 
-goToHomeBtn.addEventListener('click', () => {
-    rapportiniPage.classList.remove('active');
+btn_vai_a_home.addEventListener('click', () => {
+    pagina_rapportini.classList.remove('active');
     homePage.classList.add('active');
     updateStats();
 });
 
-// Carica dati all'avvio
-loadInterventi();
-
-// Salva intervento
-saveBtn.addEventListener('click', saveIntervento);
-
-// Cancella modifica
-cancelBtn.addEventListener('click', () => {
-    resetForm();
-});
+btn_salva.addEventListener('click', salva_rapportino);      // Salva rapportino
+btn_cancella.addEventListener('click', reset_rapportino);   // Cancella rapportino
 
 // Ricerca
-searchInput.addEventListener('input', (e) => {
+cerca_rapportino.addEventListener('input', (e) => {
     renderInterventi(e.target.value);
 });
 
 // CSV Export/Import
-exportBtn.addEventListener('click', exportToCSV);
-importBtn.addEventListener('click', () => fileInput.click());
-fileInput.addEventListener('change', importFromCSV);
+btn_export_csv.addEventListener('click', exportToCSV);
+btn_import_csv.addEventListener('click', file_input.click());
+file_input.addEventListener('change', importFromCSV);
+
+// ************************************************
+// **** DICHIARAZIONI METODI E EVENTI - FINE ****
+// ************************************************
+
+
+// Carica dati all'apertura del sito
+inizializza_rapportini();
+
 
 // FUNZIONI API
-
-async function loadInterventi() {
+async function inizializza_rapportini() {
     try {
         const response = await fetch(`${API_URL}/interventi`);
         const result = await response.json();
         
         if (result.success) {
-            interventi = result.data;
+            lista_rapportini = result.data;
             renderInterventi();
             updateStats();
         } else {
@@ -90,21 +102,21 @@ async function loadInterventi() {
     }
 }
 
-async function saveIntervento() {
+async function salva_rapportino() {
     // Validazione
-    if (!clienteInput.value.trim() || !dataInput.value || !oreInput.value || !importoInput.value) {
+    if (!iv_cliente.value.trim() || !iv_data.value || !iv_ore.value || !iv_importo.value) {
         alert('Compila tutti i campi obbligatori (Cliente, Data, Ore, Importo)');
         return;
     }
 
     const intervento = {
         id: editingId || `intervento_${Date.now()}`,
-        cliente: clienteInput.value.trim(),
-        data: dataInput.value,
-        luogo: luogoInput.value.trim(),
-        ore: parseFloat(oreInput.value),
-        descrizione: descrizioneInput.value.trim(),
-        importo: parseFloat(importoInput.value),
+        cliente: iv_cliente.value.trim(),
+        data: iv_data.value,
+        luogo: iv_luogo.value.trim(),
+        ore: parseFloat(iv_ore.value),
+        descrizione: iv_descrizione.value.trim(),
+        importo: parseFloat(iv_importo.value),
         createdAt: new Date().toISOString()
     };
 
@@ -131,8 +143,8 @@ async function saveIntervento() {
         
         if (result.success) {
             alert(editingId ? 'Intervento aggiornato con successo!' : 'Intervento salvato con successo!');
-            resetForm();
-            await loadInterventi();
+            reset_rapportino();
+            await inizializza_rapportini();
         } else {
             alert('Errore nel salvataggio: ' + result.message);
         }
@@ -156,7 +168,7 @@ async function deleteIntervento(id) {
         
         if (result.success) {
             alert('Intervento eliminato con successo!');
-            await loadInterventi();
+            await inizializza_rapportini();
         } else {
             alert('Errore nell\'eliminazione: ' + result.message);
         }
@@ -168,44 +180,44 @@ async function deleteIntervento(id) {
 
 function editIntervento(intervento) {
     editingId = intervento.id;
-    clienteInput.value = intervento.cliente;
-    dataInput.value = intervento.data;
-    luogoInput.value = intervento.luogo || '';
-    oreInput.value = intervento.ore;
-    descrizioneInput.value = intervento.descrizione || '';
-    importoInput.value = intervento.importo;
+    iv_cliente.value = intervento.cliente;
+    iv_data.value = intervento.data;
+    iv_luogo.value = intervento.luogo || '';
+    iv_ore.value = intervento.ore;
+    iv_descrizione.value = intervento.descrizione || '';
+    iv_importo.value = intervento.importo;
     
-    formTitle.textContent = 'Modifica Intervento';
-    saveBtn.textContent = 'Aggiorna Intervento';
-    cancelBtn.style.display = 'block';
+    iv_titolo.textContent = 'Modifica Intervento';
+    btn_salva.textContent = 'Aggiorna Intervento';
+    btn_cancella.style.display = 'block';
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function resetForm() {
+function reset_rapportino() {
     editingId = null;
-    clienteInput.value = '';
-    dataInput.value = '';
-    luogoInput.value = '';
-    oreInput.value = '';
-    descrizioneInput.value = '';
-    importoInput.value = '';
+    iv_cliente.value = '';
+    iv_data.value = '';
+    iv_luogo.value = '';
+    iv_ore.value = '';
+    iv_descrizione.value = '';
+    iv_importo.value = '';
     
-    formTitle.textContent = 'Nuovo Intervento';
-    saveBtn.textContent = 'Salva Intervento';
-    cancelBtn.style.display = 'none';
+    iv_titolo.textContent = 'Nuovo Intervento';
+    btn_salva.textContent = 'Salva Intervento';
+    btn_cancella.style.display = 'none';
 }
 
 function renderInterventi(searchTerm = '') {
     const filteredInterventi = searchTerm 
-        ? interventi.filter(i => 
+        ? lista_rapportini.filter(i => 
             i.cliente.toLowerCase().includes(searchTerm.toLowerCase()) ||
             (i.luogo && i.luogo.toLowerCase().includes(searchTerm.toLowerCase()))
         )
-        : interventi;
+        : lista_rapportini;
 
     if (filteredInterventi.length === 0) {
-        interventiList.innerHTML = `
+        interventi_lista.innerHTML = `
             <div class="empty-state">
                 <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -224,7 +236,7 @@ function renderInterventi(searchTerm = '') {
         new Date(b.data) - new Date(a.data)
     );
 
-    interventiList.innerHTML = sortedInterventi.map(intervento => `
+    interventi_lista.innerHTML = sortedInterventi.map(intervento => `
         <div class="intervento-card">
             <div class="intervento-header">
                 <div class="intervento-info">
@@ -291,13 +303,13 @@ function renderInterventi(searchTerm = '') {
 }
 
 function updateStats() {
-    const totalInterventi = interventi.length;
-    const totalOre = interventi.reduce((sum, i) => sum + (i.ore || 0), 0);
-    const totalFatturato = interventi.reduce((sum, i) => sum + (i.importo || 0), 0);
+    const loc_totale_interventi = lista_rapportini.length;
+    const loc_totale_ore = lista_rapportini.reduce((sum, i) => sum + (i.ore || 0), 0);
+    const loc_totale_fatturato = lista_rapportini.reduce((sum, i) => sum + (i.importo || 0), 0);
 
-    totalInterventiEl.textContent = totalInterventi;
-    totalOreEl.textContent = `${totalOre.toFixed(1)}h`;
-    totalFatturatoEl.textContent = `€${totalFatturato.toFixed(2)}`;
+    totale_interventi.textContent = loc_totale_interventi;
+    totale_ore.textContent = `${loc_totale_ore.toFixed(1)}h`;
+    totale_fatturato.textContent = `€${loc_totale_fatturato.toFixed(2)}`;
 }
 
 function formatDate(dateString) {
@@ -358,12 +370,12 @@ async function importFromCSV(event) {
         
         if (result.success) {
             alert(result.message);
-            await loadInterventi();
+            await inizializza_rapportini();
         } else {
             alert('Errore nell\'importazione: ' + result.message);
         }
 
-        fileInput.value = '';
+        file_input.value = '';
     } catch (error) {
         console.error('Errore:', error);
         alert('Errore nella lettura del file CSV');
@@ -372,7 +384,7 @@ async function importFromCSV(event) {
 
 // Funzioni globali per onclick
 window.editInterventoById = function(id) {
-    const intervento = interventi.find(i => i.id === id);
+    const intervento = lista_rapportini.find(i => i.id === id);
     if (intervento) {
         editIntervento(intervento);
     }

@@ -4,7 +4,7 @@ const path = require('path');
 const cors = require('cors');
 
 const app = express();
-const PORT = 25565;
+const PORT = 30000;
 
 // Middleware
 app.use(cors());
